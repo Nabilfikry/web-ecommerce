@@ -1,0 +1,12 @@
+{
+  "name": "@ecommerce/backend-service",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "go run ./cmd/server",
+    "build": "go build -o ../../bin/backend-service ./cmd/server",
+    "test": "go test ./...",
+    "lint": "go vet ./..."
+  }
+}
+
