@@ -221,3 +221,4 @@ func (s *service) GetPaymentStatus(ctx context.Context, invoiceNumber string) (*
 		UpdatedAt:       p.UpdatedAt,
 	}, nil
 }
+

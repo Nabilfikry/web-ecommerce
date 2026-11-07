@@ -23,3 +23,4 @@ CREATE TABLE IF NOT EXISTS payments (
 
 CREATE INDEX IF NOT EXISTS idx_payments_order ON payments(order_id);
 CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_number);
+

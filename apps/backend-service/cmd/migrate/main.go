@@ -51,7 +51,7 @@ func main() {
 		}
 	case "seed":
 		fmt.Println("Running database seeder...")
-		database.SeedInitialData(db)
+		database.SeedAllData(db, true)
 		fmt.Println("Database seeded successfully.")
 	case "status":
 		if err := database.MigrateStatus(db, migrationDir); err != nil {

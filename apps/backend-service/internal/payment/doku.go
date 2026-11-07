@@ -157,3 +157,4 @@ func (c *dokuClient) CreateCheckoutSession(ctx context.Context, req DokuCheckout
 
 	return &dokuResp, nil
 }
+

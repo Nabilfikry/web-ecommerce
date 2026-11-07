@@ -106,3 +106,4 @@ type DokuNotificationPayload struct {
 	} `json:"customer,omitempty"`
 	Raw json.RawMessage `json:"-"`
 }
+

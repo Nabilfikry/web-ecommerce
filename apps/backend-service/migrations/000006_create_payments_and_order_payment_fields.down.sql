@@ -6,3 +6,4 @@ ALTER TABLE orders
     DROP COLUMN IF EXISTS payment_status,
     DROP COLUMN IF EXISTS invoice_number,
     DROP COLUMN IF EXISTS payment_url;
+
