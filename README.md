@@ -11,6 +11,7 @@ e-commerce/
 │   └── backend-service/    # Backend: Go HTTP service (cmd, internal, pkg, api)
 ├── packages/
 │   └── shared-types/       # Shared TypeScript types & interfaces
+├── docs/                   # PRD, ERD, API Contract, Architecture & Feature Guide
 ├── turbo.json              # Turborepo task pipeline configuration
 ├── go.work                 # Go workspace multi-module root
 ├── package.json            # Root workspace scripts & dependencies
@@ -60,4 +61,15 @@ bun run lint
 bun run check
 bun run test
 ```
+
+## Documentation
+
+Seluruh dokumentasi proyek dan panduan desain:
+- [**Semantic Design System (DESIGN.md)**](./DESIGN.md)
+- [**Product Requirements Document (PRD)**](./docs/PRD.md)
+- [**Database Architecture & ERD**](./docs/DATABASE_ERD.md)
+- [**REST API v1 Specification**](./docs/API_CONTRACT.md)
+- [**System Architecture**](./docs/ARCHITECTURE.md)
+- [**Panduan Pengerjaan Fitur (Developer SOP)**](./docs/FEATURE_DEVELOPMENT_GUIDE.md)
+
 

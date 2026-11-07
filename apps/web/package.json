@@ -23,7 +23,8 @@
 		"build-storybook": "storybook build"
 	},
 	"dependencies": {
-		"@ecommerce/shared-types": "workspace:*"
+		"@ecommerce/shared-types": "workspace:*",
+		"lucide-svelte": "^1.0.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
