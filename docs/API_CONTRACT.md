@@ -620,6 +620,109 @@
 ```json
 {
   "success": true,
+  "message": "Order marked as completed",
+  "data": {
+    "id": "order-uuid-998877",
+    "status": "completed"
+  }
+}
+```
+
+---
+
+### 5. DOKU Payment Gateway Endpoints
+
+Integrasi payment gateway DOKU Checkout v1 (Jokul) mendukung Virtual Account (BCA, Mandiri, BRI, BNI, Permata), QRIS, dan E-Wallet (OVO, DANA, ShopeePay).
+
+#### A. Inisiasi Pembayaran DOKU (Buyer)
+- **Method / Path:** `POST /api/v1/orders/:id/pay`
+- **Access:** Authenticated (Role: `buyer`, Pemilik Pesanan)
+- **Response 200 OK:**
+```json
+{
+  "success": true,
+  "message": "DOKU payment session created successfully",
+  "data": {
+    "order_id": "order-uuid-998877",
+    "invoice_number": "INV-20261107-998877aa",
+    "amount": 1300000,
+    "payment_url": "https://jokul.doku.com/checkout/link/...",
+    "payment_status": "unpaid"
+  }
+}
+```
+
+#### B. DOKU Webhook Notification (Asynchronous Callback)
+- **Method / Path:** `POST /api/v1/payments/notifications/doku`
+- **Access:** Public (Diproteksi tanda tangan kriptografis HMAC-SHA256 pada header `Signature`)
+- **Headers:**
+  - `Client-Id`: DOKU Merchant Client ID
+  - `Request-Id`: UUID string
+  - `Request-Timestamp`: ISO8601 UTC timestamp
+  - `Signature`: `HMACSHA256=<base64_hmac>`
+- **Request Body (Contoh SUCCESS):**
+```json
+{
+  "order": {
+    "invoice_number": "INV-20261107-998877aa",
+    "amount": 1300000.00
+  },
+  "transaction": {
+    "status": "SUCCESS",
+    "amount": 1300000.00,
+    "invoice_number": "INV-20261107-998877aa",
+    "journal_num": "TRX-DOKU-987654321"
+  },
+  "payment": {
+    "payment_method_type": "VIRTUAL_ACCOUNT_BCA"
+  }
+}
+```
+- **Response 200 OK:**
+```json
+{
+  "success": true,
+  "message": "Notification received and processed"
+}
+```
+
+#### C. Simulasi Pembayaran DOKU (Development & Testing Helper)
+- **Method / Path:** `POST /api/v1/payments/simulate`
+- **Access:** Public
+- **Request Body:**
+```json
+{
+  "invoice_number": "INV-20261107-998877aa",
+  "status": "SUCCESS"
+}
+```
+*(Status yang didukung: `SUCCESS`, `EXPIRED`, `FAILED`)*
+- **Response 200 OK:**
+```json
+{
+  "success": true,
+  "message": "Payment simulated successfully"
+}
+```
+
+#### D. Status Pembayaran
+- **Method / Path:** `GET /api/v1/payments/status/:invoice`
+- **Access:** Public / Authenticated
+- **Response 200 OK:**
+```json
+{
+  "success": true,
+  "data": {
+    "invoice_number": "INV-20261107-998877aa",
+    "amount": 1300000,
+    "status": "SUCCESS",
+    "payment_method": "VIRTUAL_ACCOUNT_BCA",
+    "doku_reference_id": "TRX-DOKU-987654321"
+  }
+}
+```
+{
+  "success": true,
   "message": "Order confirmed as completed. Thank you!",
   "data": {
     "id": "order-uuid-998877",

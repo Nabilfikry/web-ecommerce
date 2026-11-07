@@ -31,6 +31,7 @@ erDiagram
     PRODUCTS ||--o{ CART_ITEMS : "selected_in"
 
     ORDERS ||--|{ ORDER_ITEMS : "contains"
+    ORDERS ||--o{ PAYMENTS : "tracks"
     PRODUCTS ||--o{ ORDER_ITEMS : "snapshot_referenced"
 
     USERS {
@@ -79,8 +80,25 @@ erDiagram
         uuid seller_id FK
         numeric total_amount
         varchar status "pending|confirmed|processing|shipped|completed|cancelled|rejected"
+        varchar payment_status "unpaid|paid|expired|failed|refunded"
+        varchar invoice_number
+        text payment_url
         jsonb shipping_address
         text notes
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    PAYMENTS {
+        uuid id PK
+        uuid order_id FK
+        varchar invoice_number
+        numeric amount
+        varchar payment_method
+        varchar channel
+        varchar status "PENDING|SUCCESS|EXPIRED|FAILED"
+        varchar doku_reference_id
+        jsonb raw_payload
         timestamptz created_at
         timestamptz updated_at
     }

@@ -72,6 +72,16 @@ const (
 	StatusRejected   OrderStatus = "rejected"
 )
 
+type PaymentStatus string
+
+const (
+	PaymentStatusUnpaid   PaymentStatus = "unpaid"
+	PaymentStatusPaid     PaymentStatus = "paid"
+	PaymentStatusExpired  PaymentStatus = "expired"
+	PaymentStatusFailed   PaymentStatus = "failed"
+	PaymentStatusRefunded PaymentStatus = "refunded"
+)
+
 type ShippingAddress struct {
 	RecipientName string `json:"recipient_name"`
 	Phone         string `json:"phone"`
@@ -101,9 +111,27 @@ type Order struct {
 	Seller          *User           `gorm:"foreignKey:SellerID" json:"seller,omitempty"`
 	TotalAmount     float64         `gorm:"type:numeric(14,2);not null;check:total_amount >= 0" json:"total_amount"`
 	Status          OrderStatus     `gorm:"type:varchar(20);not null;default:'pending'" json:"status"`
+	PaymentStatus   PaymentStatus   `gorm:"type:varchar(30);not null;default:'unpaid'" json:"payment_status"`
+	InvoiceNumber   *string         `gorm:"type:varchar(100);index" json:"invoice_number,omitempty"`
+	PaymentURL      *string         `gorm:"type:text" json:"payment_url,omitempty"`
 	ShippingAddress ShippingAddress `gorm:"type:jsonb;not null" json:"shipping_address"`
 	Notes           *string         `gorm:"type:text" json:"notes,omitempty"`
 	Items           []OrderItem     `gorm:"foreignKey:OrderID" json:"items"`
+	CreatedAt       time.Time       `json:"created_at"`
+	UpdatedAt       time.Time       `json:"updated_at"`
+}
+
+type Payment struct {
+	ID              uuid.UUID       `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	OrderID         uuid.UUID       `gorm:"type:uuid;not null;index" json:"order_id"`
+	Order           *Order          `gorm:"foreignKey:OrderID" json:"order,omitempty"`
+	InvoiceNumber   string          `gorm:"type:varchar(100);not null;index" json:"invoice_number"`
+	Amount          float64         `gorm:"type:numeric(14,2);not null" json:"amount"`
+	PaymentMethod   string          `gorm:"type:varchar(50)" json:"payment_method,omitempty"`
+	Channel         string          `gorm:"type:varchar(50)" json:"channel,omitempty"`
+	Status          string          `gorm:"type:varchar(30);not null;default:'PENDING'" json:"status"`
+	DokuReferenceID string          `gorm:"type:varchar(100)" json:"doku_reference_id,omitempty"`
+	RawPayload      json.RawMessage `gorm:"type:jsonb" json:"raw_payload,omitempty"`
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }

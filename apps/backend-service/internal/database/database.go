@@ -38,6 +38,7 @@ func InitDB(dsn string) (*gorm.DB, error) {
 			&model.Order{},
 			&model.OrderItem{},
 			&model.RefreshToken{},
+			&model.Payment{},
 		); err != nil {
 			return nil, fmt.Errorf("failed to auto-migrate database: %w", err)
 		}

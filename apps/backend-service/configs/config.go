@@ -12,6 +12,11 @@ type Config struct {
 	JWTSecret          string
 	RefreshTokenSecret string
 	FrontendURL        string
+	DokuClientID       string
+	DokuSecretKey      string
+	DokuIsProduction   bool
+	DokuCallbackURL    string
+	DokuSimulateMode   bool
 }
 
 func loadEnvFile(filenames ...string) {
@@ -69,11 +74,29 @@ func LoadConfig() *Config {
 		frontendURL = "http://localhost:5173"
 	}
 
+	dokuClientID := os.Getenv("DOKU_CLIENT_ID")
+	dokuSecretKey := os.Getenv("DOKU_SECRET_KEY")
+	dokuIsProd := strings.ToLower(os.Getenv("DOKU_IS_PRODUCTION")) == "true" || os.Getenv("DOKU_IS_PRODUCTION") == "1"
+	dokuCallbackURL := os.Getenv("DOKU_CALLBACK_URL")
+	if dokuCallbackURL == "" {
+		dokuCallbackURL = frontendURL + "/orders"
+	}
+
+	dokuSimulate := strings.ToLower(os.Getenv("DOKU_SIMULATE_MODE")) == "true" ||
+		dokuClientID == "" ||
+		dokuClientID == "mock" ||
+		dokuSecretKey == ""
+
 	return &Config{
 		Port:               port,
 		DatabaseURL:        dbURL,
 		JWTSecret:          jwtSecret,
 		RefreshTokenSecret: refreshTokenSecret,
 		FrontendURL:        frontendURL,
+		DokuClientID:       dokuClientID,
+		DokuSecretKey:      dokuSecretKey,
+		DokuIsProduction:   dokuIsProd,
+		DokuCallbackURL:    dokuCallbackURL,
+		DokuSimulateMode:   dokuSimulate,
 	}
 }

@@ -103,6 +103,34 @@ export type OrderStatus =
   | 'cancelled'
   | 'rejected';
 
+export type PaymentStatus =
+  | 'unpaid'
+  | 'paid'
+  | 'expired'
+  | 'failed'
+  | 'refunded';
+
+export interface Payment {
+  id: string;
+  order_id: string;
+  invoice_number: string;
+  amount: number;
+  payment_method?: string;
+  channel?: string;
+  status: 'PENDING' | 'SUCCESS' | 'EXPIRED' | 'FAILED';
+  doku_reference_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PayOrderResponse {
+  order_id: string;
+  invoice_number: string;
+  amount: number;
+  payment_url: string;
+  payment_status: PaymentStatus;
+}
+
 export interface ShippingAddress {
   recipient_name: string;
   phone: string;
@@ -133,6 +161,12 @@ export interface Order {
   totalAmount: number;
   total_amount?: number;
   status: OrderStatus;
+  payment_status?: PaymentStatus;
+  paymentStatus?: PaymentStatus;
+  invoice_number?: string | null;
+  invoiceNumber?: string | null;
+  payment_url?: string | null;
+  paymentUrl?: string | null;
   shippingAddress: ShippingAddress;
   shipping_address?: ShippingAddress;
   notes?: string | null;

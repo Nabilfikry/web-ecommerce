@@ -17,6 +17,7 @@ import (
 	"ecommerce/backend-service/internal/database"
 	"ecommerce/backend-service/internal/middleware"
 	"ecommerce/backend-service/internal/order"
+	"ecommerce/backend-service/internal/payment"
 	"ecommerce/backend-service/internal/product"
 )
 
@@ -42,18 +43,23 @@ func main() {
 	prodRepo := product.NewRepository(db)
 	cartRepo := cart.NewRepository(db)
 	orderRepo := order.NewRepository(db)
+	payRepo := payment.NewRepository(db)
 
-	// 4. Instantiate Services
+	// 4. Instantiate Clients & Services
+	dokuClient := payment.NewDokuClient(cfg.DokuClientID, cfg.DokuSecretKey, cfg.DokuIsProduction, cfg.DokuSimulateMode)
+
 	authSvc := auth.NewService(authRepo, cfg.JWTSecret, cfg.RefreshTokenSecret)
 	prodSvc := product.NewService(prodRepo)
 	cartSvc := cart.NewService(cartRepo, prodRepo)
 	orderSvc := order.NewService(orderRepo)
+	paySvc := payment.NewService(payRepo, dokuClient, cfg)
 
 	// 5. Instantiate Handlers
 	authHandler := auth.NewHandler(authSvc)
 	prodHandler := product.NewHandler(prodSvc)
 	cartHandler := cart.NewHandler(cartSvc)
 	orderHandler := order.NewHandler(orderSvc)
+	payHandler := payment.NewHandler(paySvc)
 
 	// 6. Router & Middlewares
 	mux := http.NewServeMux()
@@ -78,6 +84,7 @@ func main() {
 	prodHandler.RegisterRoutes(mux, authMw, sellerMw)
 	cartHandler.RegisterRoutes(mux, authMw, buyerMw)
 	orderHandler.RegisterRoutes(mux, authMw, buyerMw, sellerMw)
+	payHandler.RegisterRoutes(mux, authMw, buyerMw)
 
 	// Global Middleware Chain: Recovery -> Logger -> CORS -> ServeMux
 	var rootHandler http.Handler = mux

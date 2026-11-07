@@ -43,6 +43,26 @@
 		</div>
 
 		<div class="flex items-center gap-2">
+			{#if order.payment_status === 'paid' || order.paymentStatus === 'paid'}
+				<span
+					class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
+				>
+					Lunas
+				</span>
+			{:else if order.payment_status === 'expired' || order.paymentStatus === 'expired'}
+				<span
+					class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-700"
+				>
+					Kedaluwarsa
+				</span>
+			{:else if order.status === 'pending'}
+				<span
+					class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700"
+				>
+					Belum Bayar
+				</span>
+			{/if}
+
 			<Badge variant={order.status}>
 				{getStatusLabel(order.status)}
 			</Badge>

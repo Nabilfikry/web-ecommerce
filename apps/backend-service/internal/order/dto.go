@@ -43,6 +43,9 @@ type OrderResponse struct {
 	Seller          *UserSummary          `json:"seller,omitempty"`
 	TotalAmount     float64               `json:"total_amount"`
 	Status          model.OrderStatus     `json:"status"`
+	PaymentStatus   model.PaymentStatus   `json:"payment_status"`
+	InvoiceNumber   *string               `json:"invoice_number,omitempty"`
+	PaymentURL      *string               `json:"payment_url,omitempty"`
 	ShippingAddress model.ShippingAddress `json:"shipping_address"`
 	Notes           *string               `json:"notes,omitempty"`
 	Items           []OrderItemResponse   `json:"items"`

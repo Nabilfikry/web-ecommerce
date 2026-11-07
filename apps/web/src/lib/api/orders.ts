@@ -1,5 +1,12 @@
 import { apiFetch, apiFetchWithMeta, ApiClientError } from './client';
-import type { Order, ShippingAddress, OrderStatus, ApiMeta } from '@ecommerce/shared-types';
+import type {
+	Order,
+	ShippingAddress,
+	OrderStatus,
+	ApiMeta,
+	PayOrderResponse,
+	Payment
+} from '@ecommerce/shared-types';
 
 export interface CheckoutPayload {
 	shipping_address: ShippingAddress;
@@ -206,5 +213,68 @@ export const ordersApi = {
 			}
 			throw err;
 		}
+	},
+
+	async payOrder(id: string): Promise<PayOrderResponse> {
+		try {
+			return await apiFetch<PayOrderResponse>(`/orders/${id}/pay`, {
+				method: 'POST'
+			});
+		} catch (err: unknown) {
+			if (err instanceof ApiClientError && err.code === 'NETWORK_ERROR') {
+				const orders = getLocalOrders();
+				const order = orders.find((o) => o.id === id);
+				const inv = `INV-${Date.now()}`;
+				if (order) {
+					order.invoice_number = inv;
+					order.payment_url = `/orders/${id}?doku_checkout=1&invoice=${inv}&amount=${order.total_amount}`;
+					order.payment_status = 'unpaid';
+					saveLocalOrders(orders);
+				}
+				return {
+					order_id: id,
+					invoice_number: inv,
+					amount: order ? (order.total_amount ?? order.totalAmount) : 0,
+					payment_url: `/orders/${id}?doku_checkout=1&invoice=${inv}`,
+					payment_status: 'unpaid'
+				};
+			}
+			throw err;
+		}
+	},
+
+	async simulatePayment(
+		invoiceNumber: string,
+		status: 'SUCCESS' | 'FAILED' | 'EXPIRED' = 'SUCCESS'
+	): Promise<void> {
+		try {
+			await apiFetch<void>('/payments/simulate', {
+				method: 'POST',
+				body: JSON.stringify({ invoice_number: invoiceNumber, status })
+			});
+		} catch (err: unknown) {
+			if (err instanceof ApiClientError && err.code === 'NETWORK_ERROR') {
+				const orders = getLocalOrders();
+				const order = orders.find((o) => o.invoice_number === invoiceNumber);
+				if (order) {
+					if (status === 'SUCCESS') {
+						order.payment_status = 'paid';
+						if (order.status === 'pending') order.status = 'confirmed';
+					} else {
+						order.payment_status = status === 'EXPIRED' ? 'expired' : 'failed';
+						order.status = 'cancelled';
+					}
+					saveLocalOrders(orders);
+				}
+				return;
+			}
+			throw err;
+		}
+	},
+
+	async getPaymentStatus(invoiceNumber: string): Promise<Payment> {
+		return await apiFetch<Payment>(`/payments/status/${invoiceNumber}`, {
+			method: 'GET'
+		});
 	}
 };

@@ -234,6 +234,10 @@
 					<span>Biaya Pengiriman</span>
 					<span class="font-semibold text-emerald-600">Gratis (MVP)</span>
 				</div>
+				<div class="flex items-center justify-between">
+					<span>Metode Pembayaran</span>
+					<span class="font-semibold text-blue-600">DOKU Payment Gateway</span>
+				</div>
 				<div class="flex items-baseline justify-between border-t border-slate-100 pt-3">
 					<span class="text-sm font-bold text-slate-900">Total Tagihan</span>
 					<span class="text-xl font-extrabold tracking-tight text-slate-900 tabular-nums">
