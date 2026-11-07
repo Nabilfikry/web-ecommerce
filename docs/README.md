@@ -52,16 +52,23 @@ bun run dev
 # 2. Menjalankan hanya Frontend (http://localhost:5173)
 bun run dev:web
 
-# 3. Menjalankan hanya Backend (http://localhost:8080)
+# 3. Menjalankan hanya Backend (http://localhost:8000)
 bun run dev:backend
 
-# 4. Menjalankan pengecekan tipe statis di seluruh workspace
+# 4. Manajemen Database (Laravel-style Migrations)
+bun run db:status     # Melihat status migrasi (Ran / Pending)
+bun run db:migrate    # Menjalankan migrasi pending
+bun run db:rollback   # Rollback migrasi terakhir
+bun run db:fresh      # Reset database dan jalankan ulang semua migrasi + seeder
+bun run db:seed       # Menjalankan seeder akun demo & sampel produk
+
+# 5. Menjalankan pengecekan tipe statis di seluruh workspace
 bun run check
 
-# 5. Menjalankan linter dan formatter kode
+# 6. Menjalankan linter dan formatter kode
 bun run lint
 
-# 6. Menjalankan pengujian (Unit & E2E)
+# 7. Menjalankan pengujian (Unit & E2E)
 bun run test
 ```
 
