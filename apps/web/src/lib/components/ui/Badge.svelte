@@ -1,18 +1,28 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { OrderStatus } from '@ecommerce/shared-types';
+	import { getStatusLabel } from '../../utils/format';
 
 	type Variant =
 		OrderStatus | 'default' | 'secondary' | 'outline' | 'accent' | 'success' | 'danger';
 
 	interface Props {
 		variant?: Variant;
+		status?: OrderStatus;
 		size?: 'sm' | 'md';
 		class?: string;
 		children?: Snippet;
 	}
 
-	let { variant = 'default', size = 'md', class: className = '', children }: Props = $props();
+	let {
+		variant = 'default',
+		status,
+		size = 'md',
+		class: className = '',
+		children
+	}: Props = $props();
+
+	const activeVariant = $derived((status as Variant) || variant);
 
 	const variantStyles: Record<Variant, string> = {
 		default: 'bg-slate-100 text-slate-800 border-slate-200',
@@ -39,10 +49,12 @@
 
 <span
 	class="inline-flex items-center justify-center rounded-md border font-sans select-none {variantStyles[
-		variant
+		activeVariant
 	] || variantStyles.default} {sizeStyles[size]} {className}"
 >
 	{#if children}
 		{@render children()}
+	{:else if status}
+		{getStatusLabel(status)}
 	{/if}
 </span>

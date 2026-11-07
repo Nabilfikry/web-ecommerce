@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { HTMLButtonAttributes } from 'svelte/elements';
+	import type { HTMLButtonAttributes, HTMLAnchorAttributes } from 'svelte/elements';
 	import { Loader2 } from 'lucide-svelte';
 
+	type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'destructive' | 'danger' | 'ghost';
+
 	interface Props extends HTMLButtonAttributes {
-		variant?: 'primary' | 'secondary' | 'outline' | 'destructive' | 'ghost';
+		variant?: ButtonVariant;
 		size?: 'sm' | 'md' | 'lg';
 		loading?: boolean;
+		href?: string;
 		children?: Snippet;
 	}
 
@@ -16,6 +19,7 @@
 		loading = false,
 		disabled = false,
 		type = 'button',
+		href,
 		class: className = '',
 		children,
 		...rest
@@ -24,7 +28,9 @@
 	const baseStyles =
 		'inline-flex items-center justify-center font-medium transition-all duration-150 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
 
-	const variants = {
+	const normalizedVariant = $derived(variant === 'danger' ? 'destructive' : variant);
+
+	const variants: Record<'primary' | 'secondary' | 'outline' | 'destructive' | 'ghost', string> = {
 		primary: 'bg-slate-900 text-white hover:bg-slate-800 focus-visible:ring-slate-900 shadow-xs',
 		secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200 focus-visible:ring-slate-400',
 		outline:
@@ -41,16 +47,31 @@
 	};
 </script>
 
-<button
-	{type}
-	disabled={disabled || loading}
-	class="{baseStyles} {variants[variant]} {sizes[size]} {className}"
-	{...rest}
->
-	{#if loading}
-		<Loader2 class="h-4 w-4 shrink-0 animate-spin" />
-	{/if}
-	{#if children}
-		{@render children()}
-	{/if}
-</button>
+{#if href}
+	<a
+		{href}
+		class="{baseStyles} {variants[normalizedVariant]} {sizes[size]} {className}"
+		{...rest as HTMLAnchorAttributes}
+	>
+		{#if loading}
+			<Loader2 class="h-4 w-4 animate-spin" />
+		{/if}
+		{#if children}
+			{@render children()}
+		{/if}
+	</a>
+{:else}
+	<button
+		{type}
+		disabled={disabled || loading}
+		class="{baseStyles} {variants[normalizedVariant]} {sizes[size]} {className}"
+		{...rest}
+	>
+		{#if loading}
+			<Loader2 class="h-4 w-4 animate-spin" />
+		{/if}
+		{#if children}
+			{@render children()}
+		{/if}
+	</button>
+{/if}
