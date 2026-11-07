@@ -126,3 +126,4 @@ func SeedInitialData(db *gorm.DB) {
 
 	log.Println("Initial demo data seeded successfully (1 Seller, 1 Buyer, 6 Products)")
 }
+

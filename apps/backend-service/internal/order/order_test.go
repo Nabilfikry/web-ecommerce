@@ -220,3 +220,4 @@ func TestOrderService_CancelAndStockRestoration(t *testing.T) {
 		t.Errorf("expected restored stock 5, got %d", restoredProd.Stock)
 	}
 }
+

@@ -67,3 +67,4 @@ func TestRefreshTokenGeneration(t *testing.T) {
 		t.Errorf("expected HashRefreshToken to match generated hash, got %v vs %v", computedHash, hash)
 	}
 }
+

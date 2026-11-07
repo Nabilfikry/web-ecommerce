@@ -34,3 +34,4 @@ type CartResponse struct {
 	TotalItems  int                `json:"total_items"`
 	TotalAmount float64            `json:"total_amount"`
 }
+

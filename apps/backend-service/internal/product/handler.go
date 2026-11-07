@@ -187,3 +187,4 @@ func (h *Handler) handleError(w http.ResponseWriter, err error) {
 	}
 	shared.Error(w, http.StatusInternalServerError, err.Error(), "INTERNAL_SERVER_ERROR", nil)
 }
+

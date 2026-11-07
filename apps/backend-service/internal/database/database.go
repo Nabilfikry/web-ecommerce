@@ -28,17 +28,19 @@ func InitDB(dsn string) (*gorm.DB, error) {
 	sqlDB.SetMaxOpenConns(50)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	// Run AutoMigrate for all domain models
-	if err := db.AutoMigrate(
-		&model.User{},
-		&model.Product{},
-		&model.Cart{},
-		&model.CartItem{},
-		&model.Order{},
-		&model.OrderItem{},
-		&model.RefreshToken{},
-	); err != nil {
-		return nil, fmt.Errorf("failed to auto-migrate database: %w", err)
+	// AutoMigrate fallback if database has not been migrated yet
+	if !db.Migrator().HasTable(&model.User{}) {
+		if err := db.AutoMigrate(
+			&model.User{},
+			&model.Product{},
+			&model.Cart{},
+			&model.CartItem{},
+			&model.Order{},
+			&model.OrderItem{},
+			&model.RefreshToken{},
+		); err != nil {
+			return nil, fmt.Errorf("failed to auto-migrate database: %w", err)
+		}
 	}
 
 	// Add unique index on LOWER(email) for case-insensitive email uniqueness
@@ -47,3 +49,4 @@ func InitDB(dsn string) (*gorm.DB, error) {
 	log.Println("Database connection established and schema migrated successfully")
 	return db, nil
 }
+

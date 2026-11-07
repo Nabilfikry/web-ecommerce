@@ -229,3 +229,4 @@ func (s *productService) toProductResponse(p *model.Product) *ProductResponse {
 
 	return resp
 }
+

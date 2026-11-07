@@ -25,3 +25,4 @@ func TestInitDB(t *testing.T) {
 		t.Fatalf("database ping failed: %v", err)
 	}
 }
+

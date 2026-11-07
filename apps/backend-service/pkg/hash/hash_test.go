@@ -24,3 +24,4 @@ func TestHashAndCheckPassword(t *testing.T) {
 		t.Errorf("expected CheckPassword to return false for incorrect password")
 	}
 }
+

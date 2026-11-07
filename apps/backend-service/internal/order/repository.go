@@ -74,3 +74,4 @@ func (r *gormRepository) ListOrders(ctx context.Context, params ListOrdersParams
 
 	return orders, total, nil
 }
+

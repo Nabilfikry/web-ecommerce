@@ -203,3 +203,4 @@ func (s *cartService) toCartResponse(cart *model.Cart) *CartResponse {
 		TotalAmount: totalAmount,
 	}
 }
+

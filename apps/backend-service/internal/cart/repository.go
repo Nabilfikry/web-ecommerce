@@ -106,3 +106,4 @@ func (r *gormRepository) DeleteItem(ctx context.Context, cartID uuid.UUID, itemI
 func (r *gormRepository) ClearCart(ctx context.Context, cartID uuid.UUID) error {
 	return r.db.WithContext(ctx).Delete(&model.CartItem{}, "cart_id = ?", cartID).Error
 }
+

@@ -129,3 +129,4 @@ func TestCartService_Operations(t *testing.T) {
 		t.Errorf("expected 0 items after clear, got %d", cartRes.TotalItems)
 	}
 }
+

@@ -56,3 +56,4 @@ func TestErrorResponseFormatting(t *testing.T) {
 		t.Errorf("expected success false, got %v", raw["success"])
 	}
 }
+

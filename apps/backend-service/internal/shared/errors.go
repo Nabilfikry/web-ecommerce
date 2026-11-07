@@ -38,3 +38,4 @@ func NewAppError(code string, message string, statusCode int, err error) *AppErr
 		Err:        err,
 	}
 }
+

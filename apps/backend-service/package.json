@@ -6,7 +6,11 @@
     "dev": "go run ./cmd/server",
     "build": "go build -o ../../bin/backend-service ./cmd/server",
     "test": "go test ./...",
-    "lint": "go vet ./..."
+    "lint": "go vet ./...",
+    "db:migrate": "go run ./cmd/migrate up",
+    "db:rollback": "go run ./cmd/migrate rollback",
+    "db:fresh": "go run ./cmd/migrate fresh --seed",
+    "db:status": "go run ./cmd/migrate status",
+    "db:seed": "go run ./cmd/migrate seed"
   }
 }
-

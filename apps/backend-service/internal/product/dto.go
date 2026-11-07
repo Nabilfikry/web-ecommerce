@@ -59,3 +59,4 @@ type ListProductsParams struct {
 	Sort     string
 	SellerID *uuid.UUID
 }
+

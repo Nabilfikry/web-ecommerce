@@ -97,3 +97,4 @@ func (r *gormRepository) ListProducts(ctx context.Context, params ListProductsPa
 
 	return products, total, nil
 }
+

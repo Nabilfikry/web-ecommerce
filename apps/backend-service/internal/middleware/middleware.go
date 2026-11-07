@@ -149,3 +149,4 @@ func Logger(next http.Handler) http.Handler {
 		log.Printf("%s %s %d %v\n", r.Method, r.URL.Path, rec.statusCode, time.Since(start))
 	})
 }
+

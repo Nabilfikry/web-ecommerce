@@ -127,3 +127,4 @@ type RefreshToken struct {
 	RevokedAt *time.Time `json:"revoked_at,omitempty"`
 	CreatedAt time.Time  `json:"created_at"`
 }
+

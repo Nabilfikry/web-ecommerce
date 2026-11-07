@@ -205,3 +205,4 @@ func (s *authService) GetMe(ctx context.Context, userID uuid.UUID) (*UserRespons
 		CreatedAt: user.CreatedAt,
 	}, nil
 }
+

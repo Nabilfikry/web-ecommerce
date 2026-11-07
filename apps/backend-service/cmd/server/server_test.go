@@ -245,3 +245,4 @@ func TestEndToEndEcommerceWorkflow(t *testing.T) {
 		t.Errorf("expected final order status completed, got %s", completedResp.Data.Status)
 	}
 }
+

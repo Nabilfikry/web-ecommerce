@@ -73,3 +73,4 @@ func (r *gormRepository) RevokeRefreshToken(ctx context.Context, tokenHash strin
 		Where("token_hash = ?", tokenHash).
 		Update("revoked_at", now).Error
 }
+
