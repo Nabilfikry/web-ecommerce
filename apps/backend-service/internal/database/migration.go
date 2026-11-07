@@ -225,3 +225,4 @@ func MigrateStatus(db *gorm.DB, dir string) error {
 	fmt.Println()
 	return nil
 }
+

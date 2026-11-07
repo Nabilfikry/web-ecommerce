@@ -15,3 +15,4 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE INDEX IF NOT EXISTS idx_products_seller ON products(seller_id);
 CREATE INDEX IF NOT EXISTS idx_products_catalog ON products(is_active, created_at DESC) WHERE deleted_at IS NULL;
+

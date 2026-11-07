@@ -60,3 +60,4 @@ func TestFindMigrationDir_Fallback(t *testing.T) {
 		t.Errorf("expected fallback 'migrations', got %q", dir)
 	}
 }
+

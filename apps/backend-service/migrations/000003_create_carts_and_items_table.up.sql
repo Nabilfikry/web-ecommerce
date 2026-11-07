@@ -17,3 +17,4 @@ CREATE TABLE IF NOT EXISTS cart_items (
 );
 
 CREATE INDEX IF NOT EXISTS idx_cart_items_cart ON cart_items(cart_id);
+
