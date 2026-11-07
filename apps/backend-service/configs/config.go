@@ -1,7 +1,9 @@
 package configs
 
 import (
+	"bufio"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -12,7 +14,36 @@ type Config struct {
 	FrontendURL        string
 }
 
+func loadEnvFile(filenames ...string) {
+	for _, filename := range filenames {
+		file, err := os.Open(filename)
+		if err != nil {
+			continue
+		}
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			if line == "" || strings.HasPrefix(line, "#") {
+				continue
+			}
+			parts := strings.SplitN(line, "=", 2)
+			if len(parts) == 2 {
+				key := strings.TrimSpace(parts[0])
+				val := strings.TrimSpace(parts[1])
+				// Don't overwrite if already set in environment
+				if os.Getenv(key) == "" {
+					os.Setenv(key, val)
+				}
+			}
+		}
+		_ = file.Close()
+	}
+}
+
 func LoadConfig() *Config {
+	// Try loading .env from current directory or app directory
+	loadEnvFile(".env", "../../apps/backend-service/.env", "apps/backend-service/.env")
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -20,7 +51,6 @@ func LoadConfig() *Config {
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		// Default to local PostgreSQL docker container
 		dbURL = "host=localhost user=admin password=admin dbname=ecommerce_db port=5432 sslmode=disable TimeZone=Asia/Jakarta"
 	}
 
