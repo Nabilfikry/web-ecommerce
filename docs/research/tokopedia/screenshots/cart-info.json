@@ -1,0 +1,16 @@
+{
+  "title": "Masuk / Login | Tokopedia",
+  "url": "https://www.tokopedia.com/login?ld=https%3A%2F%2Fwww.tokopedia.com%2Fcart%3Ft_id%3D1794033050628%26t_st%3D1%26t_pp%3Dhomepage%26t_efo%3Dpure_goods_card%26t_ef%3D%26t_sm%3Drec_homepage_outer_flow%26t_spt%3Dhomepage",
+  "backgroundColor": "rgb(255, 255, 255)",
+  "color": "rgb(33, 33, 33)",
+  "fontFamily": "\"Open Sauce One\", sans-serif",
+  "h1": [],
+  "buttons": [
+    "Selanjutnya",
+    "Scan Kode QR",
+    "Google",
+    "Masuk dengan TikTok"
+  ],
+  "headerExists": true,
+  "footerExists": true
+}

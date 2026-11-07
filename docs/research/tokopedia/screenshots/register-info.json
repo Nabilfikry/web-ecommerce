@@ -1,0 +1,16 @@
+{
+  "title": "Daftar | Tokopedia",
+  "url": "https://www.tokopedia.com/register",
+  "backgroundColor": "rgb(255, 255, 255)",
+  "color": "rgb(33, 33, 33)",
+  "fontFamily": "\"Open Sauce One\", sans-serif",
+  "h1": [
+    "Daftar Sekarang"
+  ],
+  "buttons": [
+    "Google",
+    "Daftar"
+  ],
+  "headerExists": true,
+  "footerExists": true
+}

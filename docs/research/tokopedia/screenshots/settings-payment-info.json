@@ -1,0 +1,16 @@
+{
+  "title": "Masuk / Login | Tokopedia",
+  "url": "https://www.tokopedia.com/login?ld=%2Fuser%2Fsettings%2Fpayment",
+  "backgroundColor": "rgb(255, 255, 255)",
+  "color": "rgb(33, 33, 33)",
+  "fontFamily": "\"Open Sauce One\", sans-serif",
+  "h1": [],
+  "buttons": [
+    "Selanjutnya",
+    "Scan Kode QR",
+    "Google",
+    "Masuk dengan TikTok"
+  ],
+  "headerExists": true,
+  "footerExists": true
+}

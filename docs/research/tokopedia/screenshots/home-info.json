@@ -1,0 +1,26 @@
+{
+  "title": "Situs Jual Beli Online Terlengkap, Mudah & Aman | Tokopedia",
+  "url": "https://www.tokopedia.com/",
+  "backgroundColor": "rgb(255, 255, 255)",
+  "color": "rgba(0, 0, 0, 0.54)",
+  "fontFamily": "\"Open Sauce One\", sans-serif",
+  "h1": [],
+  "buttons": [
+    "Masuk",
+    "Daftar",
+    "Ke slide 1",
+    "Ke slide 2",
+    "Ke slide 3",
+    "Ke slide 4",
+    "Ke slide 5",
+    "prev",
+    "next",
+    "Pulsa",
+    "Paket Data",
+    "Listrik PLN",
+    "Roaming",
+    "Beli"
+  ],
+  "headerExists": false,
+  "footerExists": false
+}

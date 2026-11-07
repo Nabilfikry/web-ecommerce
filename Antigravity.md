@@ -1,0 +1,1 @@
+baca /.agent terlebih dahulu sebelum mulai planning dan mengerjakan implementasi. gunakan semua skill yang dibutuhkan!
