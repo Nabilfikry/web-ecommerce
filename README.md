@@ -11,7 +11,7 @@
 
 ---
 
-## 📌 Executive Summary (Untuk HRD & Hiring Manager)
+## 📌 Executive Summary
 
 Jika Anda meninjau repositori ini untuk keperluan seleksi talenta *Full-Stack / Frontend / Backend Engineer*, berikut adalah ringkasan kemampuan teknis dan standar industri yang diimplementasikan dalam proyek ini:
 
