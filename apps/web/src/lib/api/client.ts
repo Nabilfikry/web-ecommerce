@@ -1,4 +1,4 @@
-import type { ApiResponse, ApiErrorDetail } from '@ecommerce/shared-types';
+import type { ApiResponse, ApiErrorDetail, ApiMeta } from '@ecommerce/shared-types';
 
 export class ApiClientError extends Error {
 	status: number;
@@ -37,7 +37,15 @@ export interface RequestOptions extends RequestInit {
 	params?: Record<string, string | number | boolean | undefined | null>;
 }
 
-export async function apiFetch<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+export interface PaginatedResult<T> {
+	data: T;
+	meta?: ApiMeta;
+}
+
+export async function apiFetchRaw<T>(
+	endpoint: string,
+	options: RequestOptions = {}
+): Promise<ApiResponse<T>> {
 	const { params, headers = {}, ...rest } = options;
 
 	let url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
@@ -83,7 +91,7 @@ export async function apiFetch<T>(endpoint: string, options: RequestOptions = {}
 
 	// 204 No Content
 	if (response.status === 204) {
-		return null as unknown as T;
+		return { success: true, data: null as unknown as T };
 	}
 
 	let jsonResult: ApiResponse<T>;
@@ -96,7 +104,7 @@ export async function apiFetch<T>(endpoint: string, options: RequestOptions = {}
 				response.status
 			);
 		}
-		return null as unknown as T;
+		return { success: true, data: null as unknown as T };
 	}
 
 	if (!response.ok || jsonResult.success === false) {
@@ -109,5 +117,21 @@ export async function apiFetch<T>(endpoint: string, options: RequestOptions = {}
 		throw new ApiClientError(message, response.status, errorCode, errorDetails);
 	}
 
-	return (jsonResult.data !== undefined ? jsonResult.data : jsonResult) as T;
+	return jsonResult;
+}
+
+export async function apiFetch<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+	const result = await apiFetchRaw<T>(endpoint, options);
+	return (result.data !== undefined ? result.data : result) as T;
+}
+
+export async function apiFetchWithMeta<T>(
+	endpoint: string,
+	options: RequestOptions = {}
+): Promise<PaginatedResult<T>> {
+	const result = await apiFetchRaw<T>(endpoint, options);
+	return {
+		data: (result.data !== undefined ? result.data : result) as T,
+		meta: result.meta
+	};
 }

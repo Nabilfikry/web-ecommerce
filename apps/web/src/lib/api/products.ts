@@ -1,4 +1,4 @@
-import { apiFetch, ApiClientError } from './client';
+import { apiFetch, apiFetchWithMeta, ApiClientError } from './client';
 import type { Product, ApiMeta } from '@ecommerce/shared-types';
 
 export interface GetProductsParams {
@@ -122,7 +122,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
 export const productsApi = {
 	async getProducts(params: GetProductsParams = {}): Promise<ProductsResponse> {
 		try {
-			const res = await apiFetch<Product[]>('/products', {
+			const res = await apiFetchWithMeta<Product[]>('/products', {
 				method: 'GET',
 				params: {
 					page: params.page ?? 1,
@@ -133,11 +133,11 @@ export const productsApi = {
 			});
 
 			return {
-				products: res || [],
-				meta: {
+				products: res.data || [],
+				meta: res.meta || {
 					page: params.page ?? 1,
 					limit: params.limit ?? 12,
-					total: res?.length || 0,
+					total: res.data?.length || 0,
 					total_pages: 1
 				}
 			};

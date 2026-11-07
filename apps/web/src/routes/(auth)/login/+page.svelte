@@ -48,10 +48,10 @@
 	function fillDemoAccount(role: 'buyer' | 'seller') {
 		if (role === 'buyer') {
 			email = 'buyer@example.com';
-			password = 'Password123!';
+			password = 'Password123';
 		} else {
-			email = 'seller@example.com';
-			password = 'Password123!';
+			email = 'seller@techgear.com';
+			password = 'Password123';
 		}
 	}
 </script>

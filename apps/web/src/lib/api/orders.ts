@@ -1,4 +1,4 @@
-import { apiFetch, ApiClientError } from './client';
+import { apiFetch, apiFetchWithMeta, ApiClientError } from './client';
 import type { Order, ShippingAddress, OrderStatus, ApiMeta } from '@ecommerce/shared-types';
 
 export interface CheckoutPayload {
@@ -96,7 +96,7 @@ export const ordersApi = {
 
 	async getOrders(params: GetOrdersParams = {}): Promise<OrdersResponse> {
 		try {
-			const res = await apiFetch<Order[]>('/orders', {
+			const res = await apiFetchWithMeta<Order[]>('/orders', {
 				method: 'GET',
 				params: {
 					page: params.page ?? 1,
@@ -106,11 +106,11 @@ export const ordersApi = {
 			});
 
 			return {
-				orders: res || [],
-				meta: {
+				orders: res.data || [],
+				meta: res.meta || {
 					page: params.page ?? 1,
 					limit: params.limit ?? 10,
-					total: res?.length || 0,
+					total: res.data?.length || 0,
 					total_pages: 1
 				}
 			};

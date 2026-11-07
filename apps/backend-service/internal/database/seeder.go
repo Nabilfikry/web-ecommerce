@@ -20,7 +20,7 @@ func SeedInitialData(db *gorm.DB) {
 
 	passHash, _ := hash.HashPassword("Password123")
 
-	// 1. Demo Seller
+	// 1. Demo Seller (Official store & generic demo)
 	sellerID := uuid.New()
 	seller := model.User{
 		ID:           sellerID,
@@ -30,6 +30,15 @@ func SeedInitialData(db *gorm.DB) {
 		Role:         model.RoleSeller,
 	}
 	_ = db.Create(&seller).Error
+
+	sellerGeneric := model.User{
+		ID:           uuid.New(),
+		Name:         "Demo Seller",
+		Email:        "seller@example.com",
+		PasswordHash: passHash,
+		Role:         model.RoleSeller,
+	}
+	_ = db.Create(&sellerGeneric).Error
 
 	// 2. Demo Buyer
 	buyerID := uuid.New()
