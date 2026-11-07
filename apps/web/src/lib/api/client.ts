@@ -14,7 +14,9 @@ export class ApiClientError extends Error {
 	}
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
+const API_BASE_URL =
+	(typeof import.meta !== 'undefined' && (import.meta.env?.PUBLIC_API_URL || import.meta.env?.VITE_API_URL)) ||
+	'http://localhost:8000/api/v1';
 
 export function getAuthToken(): string | null {
 	if (typeof window === 'undefined') return null;
