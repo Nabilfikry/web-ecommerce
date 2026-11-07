@@ -6,6 +6,7 @@
 	import { productsApi } from '$lib/api/products';
 	import { formatIDR } from '$lib/utils/format';
 	import { toast } from '$lib/stores/toast.svelte';
+	import { cart } from '$lib/stores/cart.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import {
 		ShoppingCart,
@@ -22,6 +23,8 @@
 	let loading = $state(true);
 	let quantity = $state(1);
 	let imgError = $state(false);
+	let isAddingToCart = $state(false);
+	let isBuyingNow = $state(false);
 
 	const productId = $derived(page.params.id);
 
@@ -53,15 +56,60 @@
 		}
 	}
 
-	function handleAddToCart() {
+	async function handleAddToCart() {
 		if (!product) return;
-		toast.success(`Berhasil menambahkan ${quantity}x "${product.name}" ke keranjang!`);
+		if (product.stock <= 0) {
+			toast.error('Stok produk habis');
+			return;
+		}
+
+		isAddingToCart = true;
+		try {
+			await cart.addItem(product, quantity);
+			toast.success(`Berhasil menambahkan ${quantity}x "${product.name}" ke keranjang!`);
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : 'Gagal menambahkan produk ke keranjang';
+			toast.error(msg);
+		} finally {
+			isAddingToCart = false;
+		}
 	}
 
-	function handleBuyNow() {
+	async function handleBuyNow() {
 		if (!product) return;
-		handleAddToCart();
-		goto('/checkout');
+		if (product.stock <= 0) {
+			toast.error('Stok produk habis');
+			return;
+		}
+
+		isBuyingNow = true;
+		try {
+			// Check single-seller rule (BR-010)
+			const currentSellerIds = cart.sellerIds;
+			const thisSellerId = product.seller_id || product.sellerId || product.seller?.id;
+			if (
+				currentSellerIds.length > 0 &&
+				thisSellerId &&
+				currentSellerIds.some((id) => id !== thisSellerId)
+			) {
+				const confirmed = confirm(
+					'Keranjang Anda memuat produk dari toko lain. Sesuai aturan sistem, satu transaksi hanya untuk 1 toko. Kosongkan keranjang dan lanjutkan beli sekarang?'
+				);
+				if (!confirmed) {
+					isBuyingNow = false;
+					return;
+				}
+				await cart.clearCart();
+			}
+
+			await cart.addItem(product, quantity);
+			goto('/checkout');
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : 'Gagal memproses pembelian';
+			toast.error(msg);
+		} finally {
+			isBuyingNow = false;
+		}
 	}
 </script>
 
@@ -251,7 +299,8 @@
 						<Button
 							type="button"
 							variant="outline"
-							disabled={product.stock <= 0}
+							disabled={product.stock <= 0 || isAddingToCart || isBuyingNow}
+							loading={isAddingToCart}
 							onclick={handleAddToCart}
 							class="flex w-full items-center justify-center gap-2"
 						>
@@ -262,7 +311,8 @@
 						<Button
 							type="button"
 							variant="primary"
-							disabled={product.stock <= 0}
+							disabled={product.stock <= 0 || isAddingToCart || isBuyingNow}
+							loading={isBuyingNow}
 							onclick={handleBuyNow}
 							class="w-full"
 						>

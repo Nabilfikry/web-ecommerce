@@ -22,6 +22,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux, authMiddleware func(http.Ha
 	mux.Handle("GET /api/v1/cart", authMiddleware(buyerMiddleware(http.HandlerFunc(h.handleGetCart))))
 	mux.Handle("POST /api/v1/cart/items", authMiddleware(buyerMiddleware(http.HandlerFunc(h.handleAddItem))))
 	mux.Handle("PUT /api/v1/cart/items/{id}", authMiddleware(buyerMiddleware(http.HandlerFunc(h.handleUpdateItem))))
+	mux.Handle("PATCH /api/v1/cart/items/{id}", authMiddleware(buyerMiddleware(http.HandlerFunc(h.handleUpdateItem))))
 	mux.Handle("DELETE /api/v1/cart/items/{id}", authMiddleware(buyerMiddleware(http.HandlerFunc(h.handleRemoveItem))))
 	mux.Handle("DELETE /api/v1/cart", authMiddleware(buyerMiddleware(http.HandlerFunc(h.handleClearCart))))
 }

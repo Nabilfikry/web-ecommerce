@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { cart } from '$lib/stores/cart.svelte';
 	import { toast } from '$lib/stores/toast.svelte';
 	import { formatIDR } from '$lib/utils/format';
@@ -6,19 +7,44 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import { ShoppingBag, ArrowRight, Trash2, AlertTriangle, ShieldCheck } from 'lucide-svelte';
 
-	function handleUpdateQuantity(itemId: string, newQty: number) {
-		cart.updateQuantity(itemId, newQty);
+	async function handleUpdateQuantity(itemId: string, newQty: number) {
+		try {
+			await cart.updateQuantity(itemId, newQty);
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : 'Gagal memperbarui kuantitas barang';
+			toast.error(msg);
+		}
 	}
 
-	function handleRemoveItem(itemId: string) {
-		cart.removeItem(itemId);
-		toast.info('Item dihapus dari keranjang.');
+	async function handleRemoveItem(itemId: string) {
+		try {
+			await cart.removeItem(itemId);
+			toast.info('Item dihapus dari keranjang.');
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : 'Gagal menghapus item';
+			toast.error(msg);
+		}
 	}
 
 	async function handleClearCart() {
 		if (confirm('Apakah Anda yakin ingin mengosongkan seluruh keranjang belanja?')) {
-			await cart.clearCart();
-			toast.info('Keranjang berhasil dikosongkan.');
+			try {
+				await cart.clearCart();
+				toast.info('Keranjang berhasil dikosongkan.');
+			} catch (err: unknown) {
+				const msg = err instanceof Error ? err.message : 'Gagal mengosongkan keranjang';
+				toast.error(msg);
+			}
+		}
+	}
+
+	async function handleKeepOnlyFirstSeller() {
+		const firstProduct = cart.items[0]?.product;
+		const firstSellerId =
+			firstProduct?.seller_id || firstProduct?.sellerId || firstProduct?.seller?.id;
+		if (firstSellerId) {
+			await cart.keepOnlySeller(firstSellerId);
+			toast.success('Hanya produk dari toko ini yang dipertahankan.');
 		}
 	}
 </script>
@@ -80,17 +106,28 @@
 		<!-- Single-Seller Warning Notice (BR-010 Rule) -->
 		{#if cart.hasMultipleSellers}
 			<div
-				class="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900"
+				class="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 sm:flex-row sm:items-center sm:justify-between"
 			>
-				<AlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-				<div class="space-y-1 text-xs">
-					<h4 class="font-bold text-amber-950">Peringatan: Produk Berasal dari Toko Berbeda</h4>
-					<p class="leading-relaxed">
-						Sesuai aturan bisnis sistem e-commerce ini, satu pesanan checkout hanya dapat diproses
-						untuk produk dari <strong>satu penjual</strong>. Mohon hapus item dari penjual lain
-						sebelum melanjutkan checkout.
-					</p>
+				<div class="flex items-start gap-3">
+					<AlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+					<div class="space-y-1 text-xs">
+						<h4 class="font-bold text-amber-950">Peringatan: Produk Berasal dari Toko Berbeda</h4>
+						<p class="leading-relaxed">
+							Sesuai aturan bisnis sistem, satu pesanan checkout hanya dapat memuat produk dari
+							<strong>satu penjual</strong>.
+						</p>
+					</div>
 				</div>
+
+				{#if cart.items[0]?.product}
+					<button
+						type="button"
+						onclick={handleKeepOnlyFirstSeller}
+						class="shrink-0 cursor-pointer rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-amber-700 active:scale-95"
+					>
+						Hanya simpan toko {cart.items[0].product.seller?.name || 'pertama'}
+					</button>
+				{/if}
 			</div>
 		{/if}
 
@@ -133,17 +170,16 @@
 				</div>
 
 				<div class="pt-2">
-					<a href="/checkout" class="block w-full">
-						<Button
-							type="button"
-							variant="primary"
-							disabled={cart.hasMultipleSellers || cart.items.length === 0}
-							class="flex w-full items-center justify-center gap-2"
-						>
-							<span>Lanjut ke Checkout</span>
-							<ArrowRight class="h-4 w-4" />
-						</Button>
-					</a>
+					<Button
+						type="button"
+						variant="primary"
+						disabled={cart.hasMultipleSellers || cart.items.length === 0}
+						onclick={() => goto('/checkout')}
+						class="flex w-full items-center justify-center gap-2"
+					>
+						<span>Lanjut ke Checkout</span>
+						<ArrowRight class="h-4 w-4" />
+					</Button>
 				</div>
 
 				<div class="flex items-center justify-center gap-2 pt-2 text-[11px] text-slate-400">

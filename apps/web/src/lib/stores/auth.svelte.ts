@@ -1,6 +1,7 @@
 import type { User } from '@ecommerce/shared-types';
 import { authApi, type LoginPayload, type RegisterPayload } from '../api/auth';
 import { getAuthToken, setAuthToken } from '../api/client';
+import { cart } from './cart.svelte';
 
 class AuthStore {
 	user = $state<User | null>(null);
@@ -40,6 +41,13 @@ class AuthStore {
 			const res = await authApi.login(payload);
 			this.token = res.access_token;
 			this.user = res.user;
+			if (res.user.role === 'buyer') {
+				try {
+					await cart.syncGuestCart();
+				} catch {
+					// Ignore cart sync failure
+				}
+			}
 			return res;
 		} finally {
 			this.isLoading = false;
@@ -63,6 +71,7 @@ class AuthStore {
 			this.user = null;
 			this.token = null;
 			setAuthToken(null);
+			cart.reset();
 			this.isLoading = false;
 		}
 	}

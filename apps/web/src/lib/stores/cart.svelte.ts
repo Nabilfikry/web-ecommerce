@@ -23,7 +23,9 @@ class CartStore {
 		Array.from(
 			new Set(
 				this.cart.items
-					.map((item) => item.product.seller_id || item.product.sellerId || item.product.seller?.id)
+					.map(
+						(item) => item.product?.seller_id || item.product?.sellerId || item.product?.seller?.id
+					)
 					.filter(Boolean)
 			)
 		)
@@ -88,6 +90,41 @@ class CartStore {
 		} finally {
 			this.loading = false;
 		}
+	}
+
+	async syncGuestCart() {
+		this.loading = true;
+		try {
+			const updated = await cartApi.syncGuestCartToServer();
+			this.cart = updated;
+			return updated;
+		} finally {
+			this.loading = false;
+		}
+	}
+
+	async keepOnlySeller(targetSellerId: string) {
+		this.loading = true;
+		try {
+			const itemsToRemove = this.cart.items.filter((item) => {
+				const sid = item.product?.seller_id || item.product?.sellerId || item.product?.seller?.id;
+				return sid !== targetSellerId;
+			});
+
+			for (const it of itemsToRemove) {
+				await cartApi.removeItem(it.id);
+			}
+
+			const updated = await cartApi.getCart();
+			this.cart = updated;
+			return updated;
+		} finally {
+			this.loading = false;
+		}
+	}
+
+	reset() {
+		this.cart = { id: '', items: [], total_items: 0, total_amount: 0 };
 	}
 }
 

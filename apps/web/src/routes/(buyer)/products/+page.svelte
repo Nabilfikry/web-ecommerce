@@ -7,6 +7,7 @@
 	import ProductGrid from '$lib/components/product/ProductGrid.svelte';
 	import ProductFilter from '$lib/components/product/ProductFilter.svelte';
 	import { toast } from '$lib/stores/toast.svelte';
+	import { cart } from '$lib/stores/cart.svelte';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
 	let products = $state<Product[]>([]);
@@ -82,8 +83,14 @@
 		loadProducts();
 	});
 
-	function handleAddToCart(product: Product) {
-		toast.success(`"${product.name}" berhasil ditambahkan ke keranjang belanja.`);
+	async function handleAddToCart(product: Product) {
+		try {
+			await cart.addItem(product, 1);
+			toast.success(`"${product.name}" berhasil ditambahkan ke keranjang belanja.`);
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : 'Gagal menambahkan produk ke keranjang';
+			toast.error(msg);
+		}
 	}
 </script>
 

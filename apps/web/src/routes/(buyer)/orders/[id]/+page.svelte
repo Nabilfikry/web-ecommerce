@@ -417,7 +417,7 @@
 
 		<!-- Payment Methods Tabs -->
 		<div class="space-y-2">
-			<label class="block text-xs font-bold text-slate-800">Pilih Metode Pembayaran DOKU:</label>
+			<span class="block text-xs font-bold text-slate-800">Pilih Metode Pembayaran DOKU:</span>
 			<div class="grid grid-cols-3 gap-2">
 				<button
 					type="button"
